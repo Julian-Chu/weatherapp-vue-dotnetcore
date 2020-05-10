@@ -21,10 +21,11 @@ namespace server.Controllers
         private readonly ILogger<WeatherForecastController> _logger;
         private readonly IWeatherForecastService _service;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger, IWeatherForecastService service=null)
+        public WeatherForecastController(ILogger<WeatherForecastController> logger,
+            IWeatherForecastService service = null)
         {
             _logger = logger;
-            _service = service??new WeatherForecastService();
+            _service = service ?? new WeatherForecastService();
         }
 
         [HttpGet]
@@ -37,13 +38,12 @@ namespace server.Controllers
                 case StatusCodes.Status200OK:
                     var list = new List<WeatherForecastResponse>() {resp};
                     return Ok(list);
-                case StatusCodes.Status401Unauthorized:
-                    _logger.LogError("apikey is expired or invalid");
-                    return StatusCode(StatusCodes.Status503ServiceUnavailable);
+                case StatusCodes.Status404NotFound:
+                    return NotFound();
             }
 
-
-            return BadRequest();
+            _logger.LogError("apikey is expired or invalid");
+            return StatusCode(StatusCodes.Status503ServiceUnavailable);
         }
     }
 }
