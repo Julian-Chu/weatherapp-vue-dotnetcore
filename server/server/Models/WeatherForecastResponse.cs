@@ -26,7 +26,7 @@ namespace server.Models
         public int Cnt { get; set; }
 
         [JsonProperty("list")]
-        public List<List> List { get; set; }
+        public List<WeatherData> List { get; set; }
 
         [JsonProperty("city")]
         public City City { get; set; }
@@ -68,7 +68,7 @@ namespace server.Models
         public double Lon { get; set; }
     }
 
-    public partial class List
+    public partial class WeatherData
     {
         [JsonProperty("dt")]
         public long Dt { get; set; }
@@ -77,7 +77,7 @@ namespace server.Models
         public MainClass Main { get; set; }
 
         [JsonProperty("weather")]
-        public List<Weather> Weather { get; set; }
+        public List<WeatherThreeHours> WeathersList { get; set; }
 
         [JsonProperty("clouds")]
         public Clouds Clouds { get; set; }
@@ -143,7 +143,7 @@ namespace server.Models
         public Pod Pod { get; set; }
     }
 
-    public partial class Weather
+    public partial class WeatherThreeHours
     {
         [JsonProperty("id")]
         public long Id { get; set; }

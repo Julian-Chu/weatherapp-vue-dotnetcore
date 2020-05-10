@@ -29,15 +29,38 @@ namespace server.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<WeatherForecastResponse>> Get()
+        public ActionResult<WeatherViewData> Get()
         {
             var resp = _service.GetWeatherForecastData();
+
 
             switch (resp.StatusCode)
             {
                 case StatusCodes.Status200OK:
-                    var list = new List<WeatherForecastResponse>() {resp};
-                    return Ok(list);
+                    var viewData = new WeatherViewData();
+                    viewData.City = resp.City.Name;
+                    viewData.Current = new WeatherDTO()
+                    {
+                        Humidity = resp.List[0].Main.Humidity,
+                        Temperature = resp.List[0].Main.Temp
+                    };
+                    viewData.NextFiveDays = new List<WeatherDTO>();
+                    var pageSize = 8;
+                    for (int i = 0; i < 5; i++)
+                    {
+                        var humidity = resp.List.Skip(i * pageSize).Take(pageSize).Sum(w => w.Main.Humidity) /
+                                       (double) pageSize;
+                        var temp = resp.List.Skip(i * pageSize).Take(pageSize).Sum(w => w.Main.Temp) /
+                                   (double) pageSize;
+                        var w = new WeatherDTO
+                        {
+                            Humidity = Math.Round(humidity, 2),
+                            Temperature = Math.Round(temp, 2)
+                        };
+                        viewData.NextFiveDays.Add(w);
+                    }
+
+                    return Ok(viewData);
                 case StatusCodes.Status404NotFound:
                     return NotFound();
             }
@@ -45,5 +68,18 @@ namespace server.Controllers
             _logger.LogError("apikey is expired or invalid");
             return StatusCode(StatusCodes.Status503ServiceUnavailable);
         }
+    }
+
+    public class WeatherViewData
+    {
+        public string City { get; set; }
+        public WeatherDTO Current { get; set; }
+        public List<WeatherDTO> NextFiveDays { get; set; }
+    }
+
+    public class WeatherDTO
+    {
+        public double Humidity { get; set; }
+        public double Temperature { get; set; }
     }
 }

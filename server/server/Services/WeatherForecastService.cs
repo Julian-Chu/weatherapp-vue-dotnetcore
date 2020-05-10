@@ -28,7 +28,7 @@ namespace server.Services
             }
 
             var errorResponse = WeatherForecastErrorResponse.FromJson(resp.Content.ReadAsStringAsync().Result);
-            return new WeatherForecastResponse() {StatusCode = errorResponse.Cod, Message = errorResponse.Message};
+            return new WeatherForecastResponse() {StatusCode = errorResponse.StatusCode, Message = errorResponse.Message};
         }
     }
 }
