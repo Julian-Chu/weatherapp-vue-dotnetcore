@@ -18,8 +18,7 @@ namespace server.Model
     public partial class WeatherForecastErrorResponse
     {
         [JsonProperty("cod")]
-        [JsonConverter(typeof(ParseStringConverter))]
-        public long Cod { get; set; }
+        public int Cod { get; set; }
 
         [JsonProperty("message")]
         public string Message { get; set; }

@@ -17,10 +17,10 @@ namespace server.Models
     public partial class WeatherForecastResponse
     {
         [JsonProperty("cod")]
-        public string Cod { get; set; }
+        public int StatusCode { get; set; }
 
         [JsonProperty("message")]
-        public long Message { get; set; }
+        public string Message { get; set; }
 
         [JsonProperty("cnt")]
         public int Cnt { get; set; }
