@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using server.Models;
+using server.Services;
 
 namespace server.Controllers
 {
@@ -18,20 +19,18 @@ namespace server.Controllers
     public class WeatherForecastController : ControllerBase
     {
         private readonly ILogger<WeatherForecastController> _logger;
+        private IWeatherForecastService _service;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        public WeatherForecastController(ILogger<WeatherForecastController> logger, IWeatherForecastService service=null)
         {
             _logger = logger;
+            _service = service??new WeatherForecastService();
         }
 
         [HttpGet]
         public ActionResult<IEnumerable<WeatherForecastResponse>> Get()
         {
-            var apikey = Environment.GetEnvironmentVariable("OPENWEATHER_APIKEY");
-            var client = new HttpClient();
-            var resp = client.GetAsync(
-                    $"https://api.openweathermap.org/data/2.5/forecast?q=furth,de&appid={apikey}")
-                .Result;
+            var resp = _service.GetWeatherForecastData();
 
             switch (resp.StatusCode)
             {
