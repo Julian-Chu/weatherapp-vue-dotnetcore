@@ -1,21 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using server.Models;
 
 namespace server.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class WeatherForecastController : ControllerBase
     {
-        private static readonly string[] Summaries = new[]
-        {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
-
         private readonly ILogger<WeatherForecastController> _logger;
 
         public WeatherForecastController(ILogger<WeatherForecastController> logger)
@@ -24,16 +25,27 @@ namespace server.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<WeatherForecast> Get()
+        public ActionResult<IEnumerable<WeatherForecastResponse>> Get()
         {
-            var rng = new Random();
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
+            var apikey = Environment.GetEnvironmentVariable("OPENWEATHER_APIKEY");
+            var client = new HttpClient();
+            var resp = client.GetAsync(
+                    $"https://api.openweathermap.org/data/2.5/forecast?q=furth,de&appid={apikey}")
+                .Result;
+
+            switch (resp.StatusCode)
             {
-                Date = DateTime.Now.AddDays(index),
-                TemperatureC = rng.Next(-20, 55),
-                Summary = Summaries[rng.Next(Summaries.Length)]
-            })
-            .ToArray();
+                case HttpStatusCode.OK:
+                    var weatherForecastResponse =
+                        WeatherForecastResponse.FromJson(resp.Content.ReadAsStringAsync().Result);
+                    return new List<WeatherForecastResponse>() {weatherForecastResponse};
+                case HttpStatusCode.Unauthorized:
+                    _logger.LogError("apikey is expired or invalid");
+                    return StatusCode(StatusCodes.Status503ServiceUnavailable);
+            }
+
+
+            return BadRequest();
         }
     }
 }

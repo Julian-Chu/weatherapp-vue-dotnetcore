@@ -17,14 +17,13 @@ namespace server.Models
     public partial class WeatherForecastResponse
     {
         [JsonProperty("cod")]
-        [System.Text.Json.Serialization.JsonConverter(typeof(ParseStringConverter))]
-        public long Cod { get; set; }
+        public string Cod { get; set; }
 
         [JsonProperty("message")]
         public long Message { get; set; }
 
         [JsonProperty("cnt")]
-        public long Cnt { get; set; }
+        public int Cnt { get; set; }
 
         [JsonProperty("list")]
         public List<List> List { get; set; }
