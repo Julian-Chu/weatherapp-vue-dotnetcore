@@ -1,5 +1,6 @@
 import Vue from "vue";
 import App from "./App.vue";
+import "./assets/style_grid.css";
 
 Vue.config.productionTip = false;
 
