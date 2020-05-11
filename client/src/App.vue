@@ -24,6 +24,7 @@ import TodayWeather from "./components/TodayWeather";
 import WeatherForecast from "./components/WeatherForecast";
 import SearchBar from "./components/SearchBar";
 import SearchHistory from "./components/SearchHistory";
+import axios from 'axios';
 
 export default {
   name: "App",
@@ -74,6 +75,10 @@ export default {
   methods: {
     findCity(city) {
       alert(city);
+      axios
+        .get("https://localhost:5001/api/weatherforecast")
+        .then(res => console.log(res))
+        .catch(err => console.log(err));
     }
   }
 };
