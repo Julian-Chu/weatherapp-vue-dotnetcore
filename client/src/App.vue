@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <div class="site-content">
-      <SearchBar />
+      <SearchBar v-on:find-city="findCity"/>
       <div class="forecast-table">
         <div class="container">
           <div class="forecast-container">
@@ -13,8 +13,8 @@
             </div>
           </div>
         </div>
-        <SearchHistory :history="history" />
       </div>
+      <SearchHistory :history="history" />
     </div>
   </div>
 </template>
@@ -70,6 +70,11 @@ export default {
         { city: "Erlangen", humidity: 64.12, temperature: 283.98 }
       ]
     };
+  },
+  methods: {
+    findCity(city) {
+      alert(city);
+    }
   }
 };
 </script>

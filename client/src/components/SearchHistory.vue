@@ -12,8 +12,6 @@
 <script>
 export default {
   name: "SearchHistory",
-  props: {
-    history: {}
-  }
+  props: [history]
 };
 </script>
