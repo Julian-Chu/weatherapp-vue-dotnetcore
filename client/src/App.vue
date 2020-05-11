@@ -14,19 +14,19 @@
           </div>
         </div>
       </div>
-      <SearchHistory :history="history" />
+      <SearchHistory v-bind:searchHistory="searchHistory" />
     </div>
   </div>
 </template>
 
 <script>
-import TodayWeather from "./components/TodayWeather";
-import WeatherForecast from "./components/WeatherForecast";
-import SearchBar from "./components/SearchBar";
-import SearchHistory from "./components/SearchHistory";
-import axios from 'axios';
+  import TodayWeather from "./components/TodayWeather";
+  import WeatherForecast from "./components/WeatherForecast";
+  import SearchBar from "./components/SearchBar";
+  import SearchHistory from "./components/SearchHistory";
+  import axios from "axios";
 
-export default {
+  export default {
   name: "App",
   components: {
     SearchHistory,
@@ -66,7 +66,7 @@ export default {
           }
         ]
       },
-      history: [
+      searchHistory: [
         { city: "Erlangen", humidity: 64.12, temperature: 283.98 },
         { city: "Erlangen", humidity: 64.12, temperature: 283.98 }
       ]
@@ -77,9 +77,26 @@ export default {
       alert(city);
       axios
         .get("https://localhost:5001/api/weatherforecast")
-        .then(res => console.log(res))
+        .then(res => {
+          console.log(res);
+          this.viewdata = res.data;
+        })
         .catch(err => console.log(err));
+      this.searchHistory.push({
+        city: this.viewdata.city,
+        humidity: this.viewdata.current.humidity,
+        temperature: this.viewdata.current.temperature
+      });
+
+      if (this.searchHistory.length > 10) {
+        this.searchHistory.shift();
+      }
+
+      localStorage.setItem("searchHistory", JSON.stringify(this.searchHistory));
     }
+  },
+  mounted() {
+    this.searchHistory = JSON.parse(localStorage.getItem("searchHistory"));
   }
 };
 </script>

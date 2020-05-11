@@ -2,7 +2,7 @@
   <div class="site-content">
     <div class="container">
       <div class="search-history">
-        <div v-for="(hist, i) of history" :key="i">
+        <div v-for="(hist, i) of searchHistory" :key="i">
           {{ hist.city }} {{ hist.temperature }} {{ hist.humidity }}
         </div>
       </div>
@@ -12,6 +12,6 @@
 <script>
 export default {
   name: "SearchHistory",
-  props: [history]
+  props: ["searchHistory"]
 };
 </script>

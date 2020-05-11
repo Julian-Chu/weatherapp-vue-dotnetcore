@@ -17,6 +17,7 @@ export default {
   methods: {
     submit(){
       this.$emit("find-city", this.city);
+      this.city ="";
     }
   }
 };
