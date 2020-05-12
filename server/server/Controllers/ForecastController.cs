@@ -17,13 +17,13 @@ using server.Services;
 namespace server.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
-    public class WeatherForecastController : ControllerBase
+    [Route("api/weather/[controller]")]
+    public class ForecastController : ControllerBase
     {
-        private readonly ILogger<WeatherForecastController> _logger;
+        private readonly ILogger<ForecastController> _logger;
         private readonly IWeatherForecastService _service;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger,
+        public ForecastController(ILogger<ForecastController> logger,
             IWeatherForecastService service)
         {
             _logger = logger;
@@ -65,6 +65,7 @@ namespace server.Controllers
                 Humidity = resp.List[0].Main.Humidity,
                 Temperature = resp.List[0].Main.Temp
             };
+            viewData.DateTime = resp.List[0].Dt;
             viewData.NextFiveDays = new List<WeatherDTO>();
             const int dataPointsPerDay = 8;
             for (int i = 0; i < 5; i++)

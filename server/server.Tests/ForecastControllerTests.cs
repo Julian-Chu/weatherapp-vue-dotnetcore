@@ -13,10 +13,10 @@ using server.Services;
 
 namespace server.Tests
 {
-    public class Tests
+    public class ForecastControllerTests
     {
-        private WeatherForecastController _controller;
-        private ILogger<WeatherForecastController> _mockLogger;
+        private ForecastController _controller;
+        private ILogger<ForecastController> _mockLogger;
         private IWeatherForecastService _mockService;
         private const int DummyZipCode = 0;
         private const string DummyCityName = "";
@@ -25,8 +25,8 @@ namespace server.Tests
         public void Setup()
         {
             _mockService = Substitute.For<IWeatherForecastService>();
-            _mockLogger = Substitute.For<ILogger<WeatherForecastController>>();
-            _controller = new WeatherForecastController(_mockLogger, _mockService);
+            _mockLogger = Substitute.For<ILogger<ForecastController>>();
+            _controller = new ForecastController(_mockLogger, _mockService);
         }
 
         [Test]
