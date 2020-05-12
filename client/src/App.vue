@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <div class="site-content">
-      <SearchBar v-on:find-city="findCity"/>
+      <SearchBar v-on:find-city="findCity" />
       <div class="forecast-table">
         <div class="container">
           <div class="forecast-container">
@@ -20,20 +20,19 @@
 </template>
 
 <script>
-  import TodayWeather from "./components/TodayWeather";
-  import WeatherForecast from "./components/WeatherForecast";
-  import SearchBar from "./components/SearchBar";
-  import SearchHistory from "./components/SearchHistory";
-  import axios from "axios";
+import TodayWeather from "./components/TodayWeather";
+import WeatherForecast from "./components/WeatherForecast";
+import SearchBar from "./components/SearchBar";
+import SearchHistory from "./components/SearchHistory";
+import axios from "axios";
 
-  export default {
+export default {
   name: "App",
   components: {
     SearchHistory,
     SearchBar,
     WeatherForecast,
     TodayWeather
-    // HelloWorld
   },
   data() {
     return {
