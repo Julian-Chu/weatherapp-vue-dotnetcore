@@ -63,9 +63,9 @@ namespace server.Controllers
             viewData.Current = new WeatherDTO()
             {
                 Humidity = resp.List[0].Main.Humidity,
-                Temperature = resp.List[0].Main.Temp
+                Temperature = ConvertToCelsius(resp.List[0].Main.Temp) // Kelvin to Celsius
             };
-            viewData.DateTime = resp.List[0].Dt;
+            viewData.DateTime = resp.List[0].Dt * 1000; // to ms
             viewData.NextFiveDays = new List<WeatherDTO>();
             const int dataPointsPerDay = 8;
             for (int i = 0; i < 5; i++)
@@ -78,12 +78,17 @@ namespace server.Controllers
                 var w = new WeatherDTO
                 {
                     Humidity = Math.Round(humidity, 2),
-                    Temperature = Math.Round(temp, 2)
+                    Temperature = ConvertToCelsius(temp)  // Kelvin to Celsius
                 };
                 viewData.NextFiveDays.Add(w);
             }
 
             return viewData;
+        }
+
+        private static double ConvertToCelsius(double temp)
+        {
+            return Math.Round(temp - 273.15, 2);
         }
     }
 

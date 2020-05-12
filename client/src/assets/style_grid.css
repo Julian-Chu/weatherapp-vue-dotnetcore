@@ -374,6 +374,10 @@ form textarea {
     border-width: 1px;
 }
 
+ .forecast-container .today.forecast .forecast-content {
+    padding: 5px 20px 10px;
+    text-align: center;
+}
 .nextfivedays {
     grid-area: nextfivedays;
     min-height: 200px;

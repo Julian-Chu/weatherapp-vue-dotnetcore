@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 using Newtonsoft.Json;
 using server.Controllers;
 
@@ -7,16 +8,16 @@ namespace server.Models
 {
     public class WeatherViewData
     {
-        [JsonProperty("city")]
+        [JsonPropertyName("city")]
         public string City { get; set; }
-        [JsonProperty("current")]
+        [JsonPropertyName("current")]
         public WeatherDTO Current { get; set; }
-        [JsonProperty("nextFiveDays")]
+        [JsonPropertyName("nextFiveDays")]
         public List<WeatherDTO> NextFiveDays { get; set; }
-        [JsonProperty("message")]
+        [JsonPropertyName("message")]
         public string Message { get; set; }
 
-        [JsonProperty("datetime")]
+        [JsonPropertyName("dateTime")]
         public long DateTime { get; set; }
     }
 }
