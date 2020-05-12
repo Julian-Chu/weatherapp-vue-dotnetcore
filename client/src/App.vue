@@ -6,7 +6,7 @@
         <div class="container">
           <div class="forecast-container">
             <TodayWeather :view-data="viewData" />
-            <NextFiveDaysWeather :view-data="viewData"/>
+            <NextFiveDaysWeather :view-data="viewData" />
           </div>
         </div>
       </div>
@@ -16,13 +16,13 @@
 </template>
 
 <script>
-  import TodayWeather from "./components/TodayWeather";
-  import SearchBar from "./components/SearchBar";
-  import SearchHistory from "./components/SearchHistory";
-  import axios from "axios";
-  import NextFiveDaysWeather from "./components/NextFiveDaysWeather";
+import TodayWeather from "./components/TodayWeather";
+import SearchBar from "./components/SearchBar";
+import SearchHistory from "./components/SearchHistory";
+import axios from "axios";
+import NextFiveDaysWeather from "./components/NextFiveDaysWeather";
 
-  export default {
+export default {
   name: "App",
   components: {
     NextFiveDaysWeather,
@@ -38,32 +38,32 @@
     };
   },
   methods: {
-    findCity(city) {
+    findCity: async function(city) {
       this.errorMessage = "";
       const queryParams = isNaN(city) ? `cityname=${city}` : `zipcode=${city}`;
-      axios
-        .get(`https://localhost:5001/api/weather/forecast?${queryParams}`)
-        .then(res => {
-          this.viewData = res.data;
-          this.searchHistory.unshift({
-            city: this.viewData.city,
-            humidity: this.viewData.current.humidity + " %",
-            temperature: this.viewData.current.temperature + "\u00B0C"
-          });
-
-          if (this.searchHistory.length > 10) {
-            this.searchHistory.pop();
-          }
-
-          localStorage.setItem(
-            "searchHistory",
-            JSON.stringify(this.searchHistory)
-          );
-        })
-        .catch(err => {
-          this.errorMessage = err.response.data.message + ":" + city;
-          setTimeout(() => (this.errorMessage = ""), 2000);
+      try {
+        const res = await axios.get(
+          `https://localhost:5001/api/weather/forecast?${queryParams}`
+        );
+        this.viewData = res.data;
+        this.searchHistory.unshift({
+          city: this.viewData.city,
+          humidity: this.viewData.current.humidity + " %",
+          temperature: this.viewData.current.temperature + "\u00B0C"
         });
+
+        if (this.searchHistory.length > 10) {
+          this.searchHistory.pop();
+        }
+
+        localStorage.setItem(
+          "searchHistory",
+          JSON.stringify(this.searchHistory)
+        );
+      } catch (err) {
+        this.errorMessage = err.response.data.message + ": " + city;
+        setTimeout(() => (this.errorMessage = ""), 2000);
+      }
     }
   },
   mounted() {

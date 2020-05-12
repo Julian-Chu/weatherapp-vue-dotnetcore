@@ -13,6 +13,7 @@
           type="submit"
           value="Find"
           v-bind:disabled="!city || !validations.zipcodeIsValid"
+          v-bind:style="[city.length === 0 ? { opacity: '30%' } : {}]"
         />
       </form>
       <p v-show="!validations.zipcodeIsValid">Zipcode should be 5 digits</p>
