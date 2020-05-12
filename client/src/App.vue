@@ -5,17 +5,8 @@
       <div class="forecast-table" v-if="viewData">
         <div class="container">
           <div class="forecast-container">
-            <TodayWeather :viewdata="viewData" />
-            <div class="nextfivedays">
-              <template v-for="(forecast, i) of viewData.nextFiveDays">
-                <WeatherForecast
-                  :addDays="i + 1"
-                  :forecast="forecast"
-                  :key="i"
-                  :today="viewData.dateTime"
-                />
-              </template>
-            </div>
+            <TodayWeather :view-data="viewData" />
+            <NextFiveDaysWeather :view-data="viewData"/>
           </div>
         </div>
       </div>
@@ -25,18 +16,18 @@
 </template>
 
 <script>
-import TodayWeather from "./components/TodayWeather";
-import WeatherForecast from "./components/WeatherForecast";
-import SearchBar from "./components/SearchBar";
-import SearchHistory from "./components/SearchHistory";
-import axios from "axios";
+  import TodayWeather from "./components/TodayWeather";
+  import SearchBar from "./components/SearchBar";
+  import SearchHistory from "./components/SearchHistory";
+  import axios from "axios";
+  import NextFiveDaysWeather from "./components/NextFiveDaysWeather";
 
-export default {
+  export default {
   name: "App",
   components: {
+    NextFiveDaysWeather,
     SearchHistory,
     SearchBar,
-    WeatherForecast,
     TodayWeather
   },
   data() {
