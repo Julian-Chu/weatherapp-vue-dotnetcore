@@ -8,9 +8,14 @@
           placeholder="Please input city name or zipcode"
           v-on:keyup="validateInput"
         />
-        <input type="submit" value="Find" v-bind:disabled="!city || !validations.zipcodeIsValid" />
+        <input
+          type="submit"
+          value="Find"
+          v-bind:disabled="!city || !validations.zipcodeIsValid"
+        />
       </form>
       <p v-show="!validations.zipcodeIsValid">Zipcode should be 5 digits</p>
+      <p v-show="errMessage">{{ errMessage }}</p>
     </div>
   </div>
 </template>
@@ -18,6 +23,7 @@
 import _ from "lodash";
 export default {
   name: "SearchBar",
+  props: ["errMessage"],
   data() {
     return {
       city: "",
@@ -33,13 +39,11 @@ export default {
     },
     validateInput: _.debounce(function() {
       this.validations.zipcodeIsValid = true;
-      console.log(this.city);
-      if (this.city.length !== 0) {
-        if (!isNaN(this.city) && this.city.length !== 5) {
-          this.validations.zipcodeIsValid = false;
-        }
+      if (this.city.length === 0) return;
+      if (!isNaN(this.city) && this.city.length !== 5) {
+        this.validations.zipcodeIsValid = false;
       }
-    }, 800)
+    }, 600)
   }
 };
 </script>

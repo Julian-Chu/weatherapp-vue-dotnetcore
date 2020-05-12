@@ -6,22 +6,26 @@ const dateToMMDD = timestamp => {
   return `${year}-${month}-${day}`;
 };
 
+const dict = {
+  1: "Monday",
+  2: "Tuesday",
+  3: "Wednesday",
+  4: "Thursday",
+  5: "Friday",
+  6: "Saturday",
+  0: "Sunday"
+};
 const toWeekday = timestamp => {
   const datetime = new Date(timestamp);
   const day = datetime.getDay();
-  const dict = {
-    1: "Monday",
-    2: "Tuesday",
-    3: "Wednesday",
-    4: "Thursday",
-    5: "Friday",
-    6: "Saturday",
-    7: "Sunday"
-  };
   return dict[day];
 };
 
-export  {
-  dateToMMDD,
-  toWeekday
-}
+const getWeekday = (current, daysToAdd) => {
+  const datetime = new Date(current);
+  datetime.setDate(datetime.getDate() + daysToAdd);
+  const day = datetime.getDay();
+  return dict[day];
+};
+
+export { dateToMMDD, toWeekday, getWeekday };

@@ -1,14 +1,19 @@
 <template>
   <div id="app">
     <div class="site-content">
-      <SearchBar v-on:find-city="findCity" />
-      <div class="forecast-table">
+      <SearchBar v-bind:errMessage="errorMessage" v-on:find-city="findCity" />
+      <div class="forecast-table" v-if="viewData">
         <div class="container">
           <div class="forecast-container">
-            <TodayWeather v-bind:viewdata="viewdata" />
+            <TodayWeather :viewdata="viewData" />
             <div class="nextfivedays">
-              <template v-for="(forecast, i) of viewdata.nextFiveDays">
-                <WeatherForecast v-bind:forecast="forecast" :key="i" />
+              <template v-for="(forecast, i) of viewData.nextFiveDays">
+                <WeatherForecast
+                  :addDays="i + 1"
+                  :forecast="forecast"
+                  :key="i"
+                  :today="viewData.dateTime"
+                />
               </template>
             </div>
           </div>
@@ -36,64 +41,38 @@ export default {
   },
   data() {
     return {
-      viewdata: {
-        dateTime: Date.now(),
-        city: "Erlangen",
-        current: {
-          humidity: 88,
-          temperature: 277.33
-        },
-        nextFiveDays: [
-          {
-            humidity: 66.25,
-            temperature: 279.82
-          },
-          {
-            humidity: 59.25,
-            temperature: 282.45
-          },
-          {
-            humidity: 66.75,
-            temperature: 283.57
-          },
-          {
-            humidity: 66.38,
-            temperature: 282.3
-          },
-          {
-            humidity: 64.12,
-            temperature: 283.98
-          }
-        ]
-      },
-      searchHistory: [
-        { city: "Erlangen", humidity: 64.12, temperature: 283.98 },
-        { city: "Erlangen", humidity: 64.12, temperature: 283.98 }
-      ],
+      viewData: null,
+      errorMessage: "",
+      searchHistory: []
     };
   },
   methods: {
     findCity(city) {
-      alert(city);
+      this.errorMessage = "";
       const queryParams = isNaN(city) ? `cityname=${city}` : `zipcode=${city}`;
       axios
         .get(`https://localhost:5001/api/weather/forecast?${queryParams}`)
         .then(res => {
-          console.log(res);
-          this.viewdata = res.data;
+          this.viewData = res.data;
           this.searchHistory.unshift({
-            city: this.viewdata.city,
-            humidity: this.viewdata.current.humidity,
-            temperature: this.viewdata.current.temperature
+            city: this.viewData.city,
+            humidity: this.viewData.current.humidity + " %",
+            temperature: this.viewData.current.temperature + "\u00B0C"
           });
 
           if (this.searchHistory.length > 10) {
             this.searchHistory.pop();
           }
 
-          localStorage.setItem("searchHistory", JSON.stringify(this.searchHistory));
+          localStorage.setItem(
+            "searchHistory",
+            JSON.stringify(this.searchHistory)
+          );
         })
-        .catch(err => console.log(err));
+        .catch(err => {
+          this.errorMessage = err.response.data.message + ":" + city;
+          setTimeout(() => (this.errorMessage = ""), 2000);
+        });
     }
   },
   mounted() {
