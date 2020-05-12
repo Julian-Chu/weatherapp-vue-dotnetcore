@@ -1,0 +1,21 @@
+{
+  "name": "weather-app",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "install": "cd client && npm install && cd .. && cd server && dotnet build",
+    "client": "cd client &&  npm run serve",
+    "server": "cd server &&  dotnet run --project ./server/server.csproj"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Julian-Chu/weatherapp-vue-dotnetcore.git"
+  },
+  "author": "Julian Chu",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Julian-Chu/weatherapp-vue-dotnetcore/issues"
+  },
+  "homepage": "https://github.com/Julian-Chu/weatherapp-vue-dotnetcore#readme"
+}
