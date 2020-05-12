@@ -58,25 +58,29 @@ namespace server.Tests
         [Test]
         public void Get_NotFound_When_Service_ReturnsNotFound()
         {
+            var errMsg = "notfound";
             _mockService.GetWeatherForecastData(DummyZipCode, DummyCityName).Returns(new WeatherForecastResponse()
-                {StatusCode = StatusCodes.Status404NotFound, Message = "notfound"});
+                {StatusCode = StatusCodes.Status404NotFound, Message = errMsg});
 
-            var result = _controller.Get(DummyZipCode, DummyCityName).Result as NotFoundResult;
+            var result = _controller.Get(DummyZipCode, DummyCityName).Result as NotFoundObjectResult;
             Assert.NotNull(result);
+            var data = result.Value as WeatherViewData;
             Assert.AreEqual(StatusCodes.Status404NotFound, result.StatusCode);
+            Assert.AreEqual(errMsg, data?.Message );
         }
         [Test]
         public void Get_BadRequest_When_Service_ReturnsBadRequest()
         {
+            var errMsg = "test";
             _mockService.GetWeatherForecastData(DummyZipCode, DummyCityName).Returns(new WeatherForecastResponse()
-                {StatusCode = StatusCodes.Status400BadRequest, Message = "test"});
+                {StatusCode = StatusCodes.Status400BadRequest, Message = errMsg});
 
             var resp = _controller.Get(DummyZipCode, DummyCityName);
             var result = resp.Result as BadRequestObjectResult;
             Assert.NotNull(result);
             var data = result.Value as WeatherViewData;
             Assert.AreEqual(StatusCodes.Status400BadRequest, result.StatusCode);
-            Assert.AreEqual("test", data?.Message );
+            Assert.AreEqual(errMsg, data?.Message );
         }
     }
 }

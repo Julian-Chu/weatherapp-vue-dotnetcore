@@ -41,7 +41,7 @@ namespace server.Controllers
                 case StatusCodes.Status400BadRequest:
                     return new BadRequestObjectResult(CreateErrResponse(resp));
                 case StatusCodes.Status404NotFound:
-                    return NotFound();
+                    return new NotFoundObjectResult(CreateErrResponse(resp));
             }
 
             _logger.LogError("apikey is expired or invalid");
@@ -57,16 +57,19 @@ namespace server.Controllers
 
         private  WeatherViewData CreateWeatherViewData(WeatherForecastResponse resp)
         {
-            var viewData = new WeatherViewData();
-            viewData.Message = resp.Message;
-            viewData.City = resp.City.Name;
-            viewData.Current = new WeatherDTO()
+            var viewData = new WeatherViewData
             {
-                Humidity = resp.List[0].Main.Humidity,
-                Temperature = ConvertToCelsius(resp.List[0].Main.Temp) // Kelvin to Celsius
+                Message = resp.Message,
+                City = resp.City.Name,
+                Current = new WeatherDTO()
+                {
+                    Humidity = resp.List[0].Main.Humidity,
+                    Temperature = ConvertToCelsius(resp.List[0].Main.Temp) // Kelvin to Celsius
+                },
+                DateTime = resp.List[0].Dt * 1000,
+                NextFiveDays = new List<WeatherDTO>()
             };
-            viewData.DateTime = resp.List[0].Dt * 1000; // to ms
-            viewData.NextFiveDays = new List<WeatherDTO>();
+            // to ms
             const int dataPointsPerDay = 8;
             for (int i = 0; i < 5; i++)
             {
