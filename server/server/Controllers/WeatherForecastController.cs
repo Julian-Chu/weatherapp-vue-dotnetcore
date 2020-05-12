@@ -24,10 +24,10 @@ namespace server.Controllers
         private readonly IWeatherForecastService _service;
 
         public WeatherForecastController(ILogger<WeatherForecastController> logger,
-            IWeatherForecastService service = null)
+            IWeatherForecastService service)
         {
             _logger = logger;
-            _service = service ?? new WeatherForecastService();
+            _service = service;
         }
 
         [HttpGet]
