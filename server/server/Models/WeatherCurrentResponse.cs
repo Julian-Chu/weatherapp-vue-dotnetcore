@@ -6,15 +6,11 @@
 //
 //    var weatherCurrentResponse = WeatherCurrentResponse.FromJson(jsonString);
 
-namespace server.Model
+using System.Collections.Generic;
+using Newtonsoft.Json;
+
+namespace server.Models
 {
-    using System;
-    using System.Collections.Generic;
-
-    using System.Globalization;
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Converters;
-
     public partial class WeatherCurrentResponse
     {
         [JsonProperty("coord")]
@@ -55,21 +51,6 @@ namespace server.Model
 
         [JsonProperty("cod")]
         public int StatusCode { get; set; }
-    }
-
-    public partial class Clouds
-    {
-        [JsonProperty("all")]
-        public long All { get; set; }
-    }
-
-    public partial class Coord
-    {
-        [JsonProperty("lon")]
-        public double Lon { get; set; }
-
-        [JsonProperty("lat")]
-        public double Lat { get; set; }
     }
 
     public partial class Main
@@ -126,19 +107,9 @@ namespace server.Model
         public string Icon { get; set; }
     }
 
-    public partial class Wind
-    {
-        [JsonProperty("speed")]
-        public double Speed { get; set; }
-
-        [JsonProperty("deg")]
-        public long Deg { get; set; }
-    }
-
     public partial class WeatherCurrentResponse
     {
-        public static WeatherCurrentResponse FromJson(string json) => JsonConvert.DeserializeObject<WeatherCurrentResponse>(json, server.Model.Converter.Settings);
+        public static WeatherCurrentResponse FromJson(string json) => JsonConvert.DeserializeObject<WeatherCurrentResponse>(json, server.Models.Converter.Settings);
     }
-
 
 }

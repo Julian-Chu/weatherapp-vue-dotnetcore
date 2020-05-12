@@ -23,7 +23,7 @@ namespace server.Model
 
     public partial class WeatherForecastErrorResponse
     {
-        public static WeatherForecastErrorResponse FromJson(string json) => JsonConvert.DeserializeObject<WeatherForecastErrorResponse>(json, server.Model.Converter.Settings);
+        public static WeatherForecastErrorResponse FromJson(string json) => JsonConvert.DeserializeObject<WeatherForecastErrorResponse>(json, server.Models.Converter.Settings);
     }
 
     internal class ParseStringConverter : JsonConverter

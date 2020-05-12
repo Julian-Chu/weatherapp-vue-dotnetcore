@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using server.Models;
@@ -30,13 +31,15 @@ namespace server.Controllers
         }
 
         [HttpGet]
-        public ActionResult<WeatherViewData> Get()
+        public ActionResult<WeatherViewData> Get(int zipCode, string cityName )
         {
-            var resp = _service.GetWeatherForecastData();
+            var resp = _service.GetWeatherForecastData(zipCode, cityName);
             switch (resp.StatusCode)
             {
                 case StatusCodes.Status200OK:
                     return Ok(CreateWeatherViewData(resp));
+                case StatusCodes.Status400BadRequest:
+                    return new BadRequestObjectResult(CreateErrResponse(resp));
                 case StatusCodes.Status404NotFound:
                     return NotFound();
             }
@@ -45,9 +48,17 @@ namespace server.Controllers
             return StatusCode(StatusCodes.Status503ServiceUnavailable);
         }
 
-        private static WeatherViewData CreateWeatherViewData(WeatherForecastResponse resp)
+        private WeatherViewData CreateErrResponse(WeatherForecastResponse resp)
         {
             var viewData = new WeatherViewData();
+            viewData.Message = resp.Message;
+            return viewData;
+        }
+
+        private  WeatherViewData CreateWeatherViewData(WeatherForecastResponse resp)
+        {
+            var viewData = new WeatherViewData();
+            viewData.Message = resp.Message;
             viewData.City = resp.City.Name;
             viewData.Current = new WeatherDTO()
             {

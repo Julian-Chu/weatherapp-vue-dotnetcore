@@ -9,17 +9,18 @@ namespace server.Services
 {
     public interface IWeatherForecastService
     {
-        WeatherForecastResponse GetWeatherForecastData();
+        WeatherForecastResponse GetWeatherForecastData(int zipCode, string cityName);
     }
 
     public class WeatherForecastService : IWeatherForecastService
     {
-        public WeatherForecastResponse GetWeatherForecastData()
+        public WeatherForecastResponse GetWeatherForecastData(int zipCode, string cityName)
         {
             var apikey = Environment.GetEnvironmentVariable("OPENWEATHER_APIKEY");
             var client = new HttpClient();
+            var queryParam = String.IsNullOrEmpty(cityName)? $"zip={zipCode}":$"q={cityName}";
             var resp = client.GetAsync(
-                    $"https://api.openweathermap.org/data/2.5/forecast?q=furth,de&appid={apikey}")
+                    $"https://api.openweathermap.org/data/2.5/forecast?{queryParam},de&appid={apikey}")
                 .Result;
 
             if (resp.StatusCode == HttpStatusCode.OK)

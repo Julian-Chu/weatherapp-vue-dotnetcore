@@ -8,9 +8,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 
 namespace server.Models
 {
@@ -59,14 +57,6 @@ namespace server.Models
         public long Sunset { get; set; }
     }
 
-    public partial class Coord
-    {
-        [JsonProperty("lat")]
-        public double Lat { get; set; }
-
-        [JsonProperty("lon")]
-        public double Lon { get; set; }
-    }
 
     public partial class WeatherData
     {
@@ -95,11 +85,6 @@ namespace server.Models
         public DateTimeOffset DtTxt { get; set; }
     }
 
-    public partial class Clouds
-    {
-        [JsonProperty("all")]
-        public long All { get; set; }
-    }
 
     public partial class MainClass
     {
@@ -158,14 +143,6 @@ namespace server.Models
         public string Icon { get; set; }
     }
 
-    public partial class Wind
-    {
-        [JsonProperty("speed")]
-        public double Speed { get; set; }
-
-        [JsonProperty("deg")]
-        public long Deg { get; set; }
-    }
 
     public enum Pod { D, N };
 
@@ -179,21 +156,6 @@ namespace server.Models
     public static class Serialize
     {
         public static string ToJson(this WeatherForecastResponse self) => JsonConvert.SerializeObject(self, Converter.Settings);
-    }
-
-    internal static class Converter
-    {
-        public static readonly JsonSerializerSettings Settings = new JsonSerializerSettings
-        {
-            MetadataPropertyHandling = MetadataPropertyHandling.Ignore,
-            DateParseHandling = DateParseHandling.None,
-            Converters =
-            {
-                PodConverter.Singleton,
-                MainEnumConverter.Singleton,
-                new IsoDateTimeConverter { DateTimeStyles = DateTimeStyles.AssumeUniversal }
-            },
-        };
     }
 
     internal class ParseStringConverter : JsonConverter

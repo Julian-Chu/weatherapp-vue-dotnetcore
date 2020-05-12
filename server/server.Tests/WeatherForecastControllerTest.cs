@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using Castle.Core.Logging;
@@ -14,46 +15,68 @@ namespace server.Tests
 {
     public class Tests
     {
-        WeatherForecastController controller;
-        IWeatherForecastService service;
+        private WeatherForecastController _controller;
+        private ILogger<WeatherForecastController> _mockLogger;
+        private IWeatherForecastService _mockService;
+        private const int DummyZipCode = 0;
+        private const string DummyCityName = "";
 
         [SetUp]
         public void Setup()
         {
-            service = Substitute.For<IWeatherForecastService>();
-            var logger = Substitute.For<ILogger<WeatherForecastController>>();
-            controller = new WeatherForecastController(logger, service);
+            _mockService = Substitute.For<IWeatherForecastService>();
+            _mockLogger = Substitute.For<ILogger<WeatherForecastController>>();
+            _controller = new WeatherForecastController(_mockLogger, _mockService);
         }
 
         [Test]
         public void Get_OK()
         {
-            service.GetWeatherForecastData().Returns(new WeatherForecastResponse(){StatusCode = StatusCodes.Status200OK});
-            
-            var result =  controller.Get().Result as OkObjectResult;
+            _mockService.GetWeatherForecastData(DummyZipCode, DummyCityName).Returns(new WeatherForecastResponse()
+                {
+                StatusCode = StatusCodes.Status200OK, City = new City() {Name = "ok"},
+                List = new List<WeatherData>() {new WeatherData() {Main = new MainClass() {Humidity = 99, Temp = 20}}}
+            });
+
+            var result = _controller.Get(DummyZipCode, DummyCityName).Result as OkObjectResult;
             Assert.NotNull(result);
-            Assert.AreEqual(StatusCodes.Status200OK,result.StatusCode );
+            Assert.AreEqual(StatusCodes.Status200OK, result.StatusCode);
         }
-        
+
         [Test]
         public void Get_ServiceUnavailable_When_Service_ReturnsUnauthorized()
         {
-            service.GetWeatherForecastData().Returns(new WeatherForecastResponse(){StatusCode = StatusCodes.Status401Unauthorized});
-            
-            var result =  controller.Get().Result as StatusCodeResult;
-            
+            _mockService.GetWeatherForecastData(DummyZipCode, DummyCityName).Returns(new WeatherForecastResponse()
+                {StatusCode = StatusCodes.Status401Unauthorized});
+
+            var result = _controller.Get(DummyZipCode, DummyCityName).Result as StatusCodeResult;
+
             Assert.NotNull(result);
-            Assert.AreEqual(StatusCodes.Status503ServiceUnavailable,result.StatusCode);
+            Assert.AreEqual(StatusCodes.Status503ServiceUnavailable, result.StatusCode);
+        }
+
+        [Test]
+        public void Get_NotFound_When_Service_ReturnsNotFound()
+        {
+            _mockService.GetWeatherForecastData(DummyZipCode, DummyCityName).Returns(new WeatherForecastResponse()
+                {StatusCode = StatusCodes.Status404NotFound, Message = "notfound"});
+
+            var result = _controller.Get(DummyZipCode, DummyCityName).Result as NotFoundResult;
+            Assert.NotNull(result);
+            Assert.AreEqual(StatusCodes.Status404NotFound, result.StatusCode);
         }
         [Test]
-        public void Get_NotFound_When_Service_ReturnsNotFound ()
+        public void Get_BadRequest_When_Service_ReturnsBadRequest()
         {
-            service.GetWeatherForecastData().Returns(new WeatherForecastResponse(){StatusCode = StatusCodes.Status404NotFound});
-            
-            var result =  controller.Get().Result as StatusCodeResult;
-            
+            _mockService.GetWeatherForecastData(DummyZipCode, DummyCityName).Returns(new WeatherForecastResponse()
+                {StatusCode = StatusCodes.Status400BadRequest, Message = "test"});
+
+            var resp = _controller.Get(DummyZipCode, DummyCityName);
+            var result = resp.Result as BadRequestObjectResult;
             Assert.NotNull(result);
-            Assert.AreEqual(StatusCodes.Status404NotFound,result.StatusCode);
+            var data = result.Value as WeatherViewData;
+            Assert.AreEqual(StatusCodes.Status400BadRequest, result.StatusCode);
+            Assert.AreEqual("test", data?.Message );
         }
     }
 }

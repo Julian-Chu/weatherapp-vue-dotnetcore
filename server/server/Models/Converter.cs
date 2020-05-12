@@ -2,7 +2,7 @@ using System.Globalization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
-namespace server.Model
+namespace server.Models
 {
     internal static class Converter
     {
@@ -12,6 +12,8 @@ namespace server.Model
             DateParseHandling = DateParseHandling.None,
             Converters =
             {
+                PodConverter.Singleton,
+                MainEnumConverter.Singleton,
                 new IsoDateTimeConverter { DateTimeStyles = DateTimeStyles.AssumeUniversal }
             },
         };
