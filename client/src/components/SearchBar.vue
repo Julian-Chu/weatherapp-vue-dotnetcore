@@ -7,6 +7,7 @@
           v-model="city"
           placeholder="Please input city name or zipcode"
           v-on:keyup="validateInput"
+          data-city
         />
         <input
           type="submit"
