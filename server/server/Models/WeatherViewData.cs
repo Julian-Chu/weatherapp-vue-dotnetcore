@@ -1,7 +1,8 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using server.Controllers;
 
-namespace server.Controllers
+namespace server.Models
 {
     public class WeatherViewData
     {
