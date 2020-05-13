@@ -41,9 +41,10 @@ export default {
     findCity: async function(city) {
       this.errorMessage = "";
       const queryParams = isNaN(city) ? `cityname=${city}` : `zipcode=${city}`;
+      const backendServer = process.env.BACKEND_SERVER || "";
       try {
         const res = await axios.get(
-          `https://localhost:5001/api/weather/forecast?${queryParams}`
+          `${backendServer}/api/weather/forecast?${queryParams}`
         );
         this.viewData = res.data;
         this.searchHistory.unshift({
