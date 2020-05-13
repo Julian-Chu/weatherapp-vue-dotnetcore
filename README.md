@@ -24,3 +24,6 @@ set OPENWEATHER_APIKEY={your open weather api key}
 npm run server
 ```
 
+original template from: [link](https://www.themezy.com/free-website-templates/128-steel-weather-free-responsive-website-template)
+
+modified by using css grid
