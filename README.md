@@ -1,9 +1,10 @@
+[![Build Status](https://travis-ci.com/Julian-Chu/weatherapp-vue-dotnetcore.svg?branch=master)](https://travis-ci.com/Julian-Chu/weatherapp-vue-dotnetcore)
 # Overview
 - Vuejs 2.X
 - ASP.NET Core 3.1
 # Install
 ```shell
-npm run install
+npm run full-install
 ```
 # Run
 ### frontend:
