@@ -67,7 +67,8 @@ export default {
     }
   },
   mounted() {
-    this.searchHistory = JSON.parse(localStorage.getItem("searchHistory"));
+    this.searchHistory =
+      JSON.parse(localStorage.getItem("searchHistory")) || [];
   }
 };
 </script>
